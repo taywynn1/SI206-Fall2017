@@ -138,11 +138,9 @@ if __name__ == "__main__":
 class CardTests(unittest.TestCase):
 	def test_queen(self):
 		card = Card(rank = 12)
-		self.assertEqual(card.rank_num, 12)
 		self.assertEqual(card.rank, "Queen")
 	def test_ace(self):
 		card = Card(rank = 1)
-		self.assertEqual(card.rank_num, 1)
 		self.assertEqual(card.rank, "Ace")
 	def test_3(self):
 		card = Card(rank = 3)
@@ -155,7 +153,6 @@ class CardTests(unittest.TestCase):
 		self.assertEqual(card.suit, "Hearts")
 	def test_suit_names(self):
 		card = Card()
-		#print(card.suit_names)
 		self.assertEqual(card.suit_names, ["Diamonds","Clubs","Hearts","Spades"])
 	def test_string(self):
 		card = Card(suit = 2, rank = 7)
