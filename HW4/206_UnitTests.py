@@ -165,22 +165,24 @@ class CardTests(unittest.TestCase):
 		card = Card()
 		self.assertEqual(type(deck.pop_card()), type(card))
 	def test_play_war1(self):
-		result = play_war_game()
+		result = play_war_game(testing = True)
 		self.assertEqual(type(result), type(()))
 	def test_play_war2(self):
-		result = play_war_game()
+		result = play_war_game(testing = True)
 		self.assertEqual(len(result), 3)
 	def test_play_war3(self):
-		result = play_war_game()
+		result = play_war_game(testing = True)
 		self.assertEqual(type(result[0]), type(""))
 	#Testing whether the string method in Deck class returns a type string (checking to see if the join method works correctly).
 	def test_deck_string(self):
 		deck = Deck()
 		self.assertEqual(type(deck.__str__()), type(""))
-	#Testing to see if the default paramter for the Card class works, and the rank number turns out to be 2
+	#Testing to see if after running the sort_cards() function, if the last element in the list is a card instance
 	def test_sortcards(self):
+		d = Deck()
 		c = Card()
-		self.assertEqual(c.rank_num, 2)
+		sorted_deck = d.sort_cards()
+		self.assertEqual(type(d.cards[-1]), type(c))
 		
 
 
