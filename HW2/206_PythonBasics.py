@@ -3,7 +3,7 @@ import operator
 # SI 206 Fall 2017
 
 ##COMMENT YOUR CODE WITH:
-# Section Day/Time: 
+# Section Day/Time: Wednesday's 6-7pm
 # People you worked with: 
 
 #########
@@ -18,15 +18,25 @@ import operator
 ## Task 0. Background Information
 ## This function should print your name and your expected score.
 def task0():
-    pass # Replace with your code!
-
+    print ('Taylor Wynn')
+    print ('Expected Score: 60')
 
 
 ## Task A. String manipulation (function 'string_manip')
 ##   This function accepts any string as input. It should return a string that is manipulated in a variety of
 ##  ways defined in the specifications
 def string_manip(s):
-    pass # Replace with your code!
+    s1 = s.strip()
+    s2 = s1.upper()
+    s3 = s2.replace(' ','#')
+    s4 = s3.replace('UMSI', '')
+    result = ""
+    if len(s4) <= 1:
+        return s4
+    else:
+        for x in s4:
+            result = x + result
+        return result
 
 
 
@@ -34,12 +44,30 @@ def string_manip(s):
 ## The function name_counts takes as input a list of strings. It should return a list of tuples, where each tuple contains a UNIQUE string from the list and the count of that string's occurrences in the list.
 
 def name_counts(names):
-    pass # Replace with your code!
+    d = dict()
+    for string in names:
+        if string in d:
+            d[string] += 1
+        else:
+            d[string] = 1
+    l = list()
+    for key, val in d.items():
+        l.append((key, val))
+    l.sort()
+    sorted_lst = sorted(l, key = lambda x: x[1], reverse = True)
+    #sorted_lst = sorted(l, key = lambda t: (-t[1], t[0]))
+    return sorted_lst
+    
 
 ## TASK C. Iteration and accumulation
 ## Complete the definition of the function build_acronym.
 def build_acronym(ls):
-    pass # Replace with your code!
+    new_word = ""
+    for word in ls:
+        letter = word[0]
+        upper_letter = letter.upper()
+        new_word = new_word + upper_letter 
+    return new_word
 
 
 ## TASK D. Python user-defined types
@@ -54,13 +82,15 @@ class House(object):
         return "This is a {} house, located at {} {}.".format(self.house_color,self.address_number,self.street_name)
 
     def determine_size(self):
-        pass # Replace with your code!
-
-
-
-
-
-
+        if self.house_color == "blue":
+            size = "big"
+            return size
+        elif self.house_color == "red":
+            size = "small"
+            return size
+        else:
+            size = "medium"
+            return size
 
 
 ################################################################
@@ -84,7 +114,7 @@ def main():
     total = 0
     print()
     print ('Task 0: Info')
-    task0)
+    task0()
     print ('Task A: string manipulation'
     """\nEach OK is worth 3 points.""")
     total += test(string_manip(' Colleen van Lent'), 'TNEL#NAV#NEELLOC')
