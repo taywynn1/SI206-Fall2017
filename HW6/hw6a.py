@@ -14,7 +14,7 @@ soup = BeautifulSoup(html, "html.parser")
 l = list()
 for tag in soup.find_all('span'):
 	numbers = int(tag.string)
-	#print(numbers)
+	print(numbers)
 	l.append(numbers)
 total = sum(l)
 print(total)
