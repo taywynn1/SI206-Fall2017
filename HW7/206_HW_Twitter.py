@@ -2,7 +2,7 @@ import unittest
 import tweepy
 import requests
 import json
-
+import twitter_info
 
 ## SI 206 - HW
 ## COMMENT WITH:
@@ -47,10 +47,17 @@ import json
 ## Get your secret values to authenticate to Twitter. You may replace each of these 
 ## with variables rather than filling in the empty strings if you choose to do the secure way 
 ## for EC points
-consumer_key = "a6IMZVWT6HFrQYKEqdmdena51" 
-consumer_secret = "cuBVDftT4hKTsumFgtc2HstAtlQDIRAYN5nTbaQVdUi6gbBaKk"
-access_token = "3161503221-fwDGO7JQNGOXRwki0NxHPsei1BTBJ4uFHinG0T3"
-access_token_secret = "k6lyIPkdPn86zxZJiqCHJxjcp767fANjcxbvRnWNWj6jw"
+
+#consumer_key = "a6IMZVWT6HFrQYKEqdmdena51" 
+#consumer_secret = "cuBVDftT4hKTsumFgtc2HstAtlQDIRAYN5nTbaQVdUi6gbBaKk"
+#access_token = "3161503221-fwDGO7JQNGOXRwki0NxHPsei1BTBJ4uFHinG0T3"
+#access_token_secret = "k6lyIPkdPn86zxZJiqCHJxjcp767fANjcxbvRnWNWj6jw"
+
+consumer_key = twitter_info.consumer_key
+consumer_secret = twitter_info.consumer_secret
+access_token = twitter_info.access_token
+access_token_secret = twitter_info.access_token_secret
+
 ## Set up your authentication to Twitter
 auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
 auth.set_access_token(access_token, access_token_secret)
@@ -60,6 +67,8 @@ auth.set_access_token(access_token, access_token_secret)
 api = tweepy.API(auth, parser=tweepy.parsers.JSONParser())
 #public_tweets = api.home_timeline()
 
+def pretty(obj):
+    return json.dumps(obj, sort_keys=True, indent=2)
 
 CACHE_FNAME = 'twitter_cache.json'
 
@@ -72,10 +81,10 @@ CACHE_FNAME = 'twitter_cache.json'
 try:
     cache_file = open(CACHE_FNAME, 'r') # Try to read the data from the file
     cache_contents = cache_file.read()  # If it's there, get it into a string
-    CACHE_DICTION = json.loads(cache_contents) # And then load it into a dictionary
-    cache_file.close() # Close the file, we're good, we got the data in a dictionary.
+    CACHE_DICTION = json.loads(cache_contents) # And then load it into a dictionary (Python Object)
+    cache_file.close() # Close the file
 except:
-    CACHE_DICTION = {}
+    CACHE_DICTION = {} #If opening the cached data doesn't work then create an empty dictionary to hold the data I'll be caching
 
 
 ## 2. Write a function to get twitter data that works with the caching pattern, 
@@ -84,20 +93,19 @@ except:
 
 ## Helper functions not necessary
 
-def getLocationWithCaching(loc):
+def getTweetsWithCaching(loc):
 
     if loc in CACHE_DICTION:
-        print("Data was in the cache")
-        return CACHE_DICTION[loc]
+        print("using cache")
+        return CACHE_DICTION[loc] #if the data (returned from what you searched) is in the cache dictionary already, if so grab it and return it to use
     else:
-        print("Making a request for new data...")
-        data = tweepy.API(auth, parser=tweepy.parsers.JSONParser())
-        #data = api.home_timeline() 
+        print("fetching")
+        results = api.search(q = term, count = 5) #If not in cache dictionary, make a request to tweepy api and return dictionary
         try:
-            CACHE_DICTION[loc] =  json.loads(data)
-            dumped_json_cache = json.dumps(CACHE_DICTION)
-            fw = open(CACHE_FNAME,"w")
-            fw.write(dumped_json_cache)
+            CACHE_DICTION[term] = results #Add key-value pair to cache dictionary, where the key is the request, and the data you get back from that request.
+            dumped_json_cache = json.dumps(CACHE_DICTION) #Dump the whole cache dictionary to a string
+            fw = open(CACHE_FNAME,"w") #open the file for writing 
+            fw.write(dumped_json_cache) #write the string version of the cache dictionary to that dictionary
             fw.close() # Close the open file
             return CACHE_DICTION[loc]
         except:
@@ -108,19 +116,22 @@ def getLocationWithCaching(loc):
 ## 3. Using a loop, invoke your function, save the return value in a variable, and explore the 
 ##		data you got back!
 
-	phrase = input("Insert three different phrases: ")
-	
-	# if public_tweets:
-	# 	for status in public_tweets:
-	# 		print(status)
-	# else:
-	# 	break
-	# if len(public_tweets) < 1: break
+while True:
+	term = input("Insert three different phrases: ") 
+	data = getTweetsWithCaching(term)
+	break
 	
 ## 4. With what you learn from the data -- e.g. how exactly to find the 
 ##		text of each tweet in the big nested structure -- write code to print out 
 ## 		content from 5 tweets, as shown in the linked example.
 
+#print (pretty(data))
+for tweet in data['statuses']: #iterate through the statuses dictionary
+	text = tweet['text'] #pull out the test of each tweet
+	created = tweet['created_at'] #pull out when the tweet was created
+	print ('TEXT:', text)
+	print ('CREATED AT:', created)
+	print ('\n')
 
 
 
