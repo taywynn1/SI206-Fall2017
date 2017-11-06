@@ -104,6 +104,7 @@ conn.commit()
 # Include the blank line between each tweet.
 
 cur.execute('SELECT * FROM Tweets')
+more_than_2_rts = []
 for row in cur:
     print(row[2], row[3])
     print ('\n')
@@ -112,10 +113,8 @@ for row in cur:
 # than 2 times, and fetch them into the variable more_than_2_rts.
 # Print the results
 
-more_than_2_rts = ""
-for line in cur:
-    if line[4] > 2:
-        more_than_2_rts = line[1]
+    if row[4] > 2:
+        more_than_2_rts.append(row[1])
 print(more_than_2_rts)
 
 if __name__ == "__main__":
