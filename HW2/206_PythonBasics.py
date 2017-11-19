@@ -54,6 +54,7 @@ def name_counts(names):
     for key, val in d.items():
         l.append((key, val))
     l.sort()
+    print(l)
     sorted_lst = sorted(l, key = lambda x: x[1], reverse = True)
     #sorted_lst = sorted(l, key = lambda t: (-t[1], t[0]))
     return sorted_lst

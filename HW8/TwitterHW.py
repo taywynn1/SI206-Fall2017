@@ -35,16 +35,16 @@ except:
 # Here, define a function called get_tweets that searches for all tweets referring to or by "umsi"
 # Your function must cache data it retrieves and rely on a cache file!
 
-
-def get_tweets():
-    if 'umsi' in CACHE_DICTION:
+#I created get_tweets with a parameter so I could gather tweets for multiple authors
+def get_tweets(user):
+    if user in CACHE_DICTION:
         print("using cache")
-        return CACHE_DICTION['umsi'] #if the data (returned from what you searched) is in the cache dictionary already, if so grab it and return it to use
+        return CACHE_DICTION[user] #if the data (returned from what you searched) is in the cache dictionary already, if so grab it and return it to use
     else:
         print("fetching")
-        results = api.user_timeline('umsi') #If not in cache dictionary, make a request to tweepy api and return dictionary
+        results = api.user_timeline(user) #If not in cache dictionary, make a request to tweepy api and return dictionary
         try:
-            CACHE_DICTION['umsi'] = results #Add key-value pair to cache dictionary, where the key is the request, and the data you get back from that request.
+            CACHE_DICTION[user] = results #Add key-value pair to cache dictionary, where the key is the request, and the data you get back from that request.
             dumped_json_cache = json.dumps(CACHE_DICTION) #Dump the whole cache dictionary to a string
             fw = open(CACHE_FNAME,"w") #open the file for writing 
             fw.write(dumped_json_cache) #write the string version of the cache dictionary to that dictionary
@@ -81,14 +81,20 @@ cur.execute('CREATE TABLE Tweets (tweet_id TEXT, author TEXT, time_posted TIMEST
 
 # 3 - Invoke the function you defined above to get a list that represents a bunch of tweets from the UMSI timeline. Save those tweets in a variable called umsi_tweets.
 
-umsi_tweets = get_tweets()
+umsi_tweets = get_tweets('umsi')
+#I gathered tweets for more than one author so that the list I return at the bottom has more than umsi -- as suggested by Professor Van Lent on Piazza.)
+more_tweets = get_tweets('Beyonce')
+even_more_tweets = get_tweets('allido_is_WYNN')
 #print(pretty(umsi_tweets))
 
 # 4 - Use a for loop, the cursor you defined above to execute INSERT statements, that insert the data from each of the tweets in umsi_tweets into the correct columns in each row of the Tweets database table.
 
 for x in umsi_tweets:
     cur.execute('INSERT INTO Tweets (tweet_id, author, time_posted, tweet_text, retweets) VALUES (?,?,?,?,?)', (x['id'], x['user']['screen_name'], x['user']['created_at'], x['text'], x['retweet_count']))
-
+for x in more_tweets:
+    cur.execute('INSERT INTO Tweets (tweet_id, author, time_posted, tweet_text, retweets) VALUES (?,?,?,?,?)', (x['id'], x['user']['screen_name'], x['user']['created_at'], x['text'], x['retweet_count']))
+for x in even_more_tweets:
+    cur.execute('INSERT INTO Tweets (tweet_id, author, time_posted, tweet_text, retweets) VALUES (?,?,?,?,?)', (x['id'], x['user']['screen_name'], x['user']['created_at'], x['text'], x['retweet_count']))
 #  5- Use the database connection to commit the changes to the database
 
 conn.commit()
@@ -103,6 +109,7 @@ conn.commit()
     # take in the view while running from place to place @umichDLHS  @umich…
 # Include the blank line between each tweet.
 
+
 cur.execute('SELECT * FROM Tweets')
 more_than_2_rts = []
 for row in cur:
@@ -113,6 +120,7 @@ for row in cur:
 # than 2 times, and fetch them into the variable more_than_2_rts.
 # Print the results
 
+#I'm a little confused by this part, but I think this means that it is okay to have repeating authors in my list as I got the author for each tweet that has more than 2 RTs.
     if row[4] > 2:
         more_than_2_rts.append(row[1])
 print(more_than_2_rts)
